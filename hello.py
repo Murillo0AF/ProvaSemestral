@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, session, redirect, url_for
+from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
@@ -45,7 +45,7 @@ class User(db.Model):
 
 
 class NameForm(FlaskForm):
-    name = StringField('Cadastro Novo Professor:', validators=[DataRequired()])
+    name = StringField('Cadastro Novo Aluno:', validators=[DataRequired()])
     role = SelectField('Disciplina Assosciada:', choices=[('DSWA5'), ('GPSA5'), ('IHCA5'), ('SODA5'), ('PJIA5'), ('TCOA5')])
     submit = SubmitField('Submit')
 
@@ -87,7 +87,9 @@ def index():
             db.session.add(user)
             db.session.commit()
             session['known'] = False
+            flash('Estudante cadastrado com sucesso!', 'success')
         else:
+            flash('Estudante já cadastrado na base de dados!', 'error')
             session['known'] = True
         session['name'] = form.name.data
         return redirect(url_for('index'))
